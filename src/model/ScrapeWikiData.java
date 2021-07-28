@@ -28,7 +28,7 @@ public class ScrapeWikiData {
         setVolumeNumbers();
         setChapterSelector();
         // setVolumeTitles();
-        setChapterNumbers();
+        setChapterTitlesNums();
     }
 
     public int getChpSelOption() {
@@ -108,10 +108,10 @@ public class ScrapeWikiData {
     public ArrayList<Integer> getChapterNumbers() {
         return chapterNumbers;
     }
-    private void setChapterNumbers() {
+    private void setChapterTitlesNums() {
         boolean hasLiValue = false;
         if(chpSelOption == 1) {
-            System.out.println("1st element: " + wikiTable.select(chpSel).get(0).getElementsByAttribute("value").attr("value"));
+            // System.out.println("1st element: " + wikiTable.select(chpSel).get(0).getElementsByAttribute("value").attr("value"));
             // System.out.println("1st element attr: " + wikiTable.select(chpSel).get(0).attributes());
             // System.out.println("2nd element attr: " + wikiTable.select(chpSel).get(1).attributes());
             if( wikiTable.select(chpSel).get(0).getElementsByAttribute("value").first() != null ) {
@@ -125,18 +125,26 @@ public class ScrapeWikiData {
                 System.out.println( "Has 'start' keyyyyy" );
             }
         }
+        Pattern p;
+        Matcher m;
 
         if(chpSelOption == 1) {
-            for(Element ele : wikiTable.select(chpSel)) {
-                String chpStart = (hasLiValue) ? ele.getElementsByAttribute("value").attr("value") : ele.attributes().get("start");
+            for(Element vol : wikiTable.select(chpSel)) {
+                String chpStart = (hasLiValue) ? vol.getElementsByAttribute("value").attr("value") : vol.attributes().get("start");
                 chpStarters.add( Integer.parseInt(chpStart) );
-                System.out.println( "Chp Start: " + chpStart );
+                // System.out.println( "Chp Start: " + chpStart );
+                for(Element chpTitle : vol.select("li")) {
+                    if(chpTitle.ownText().strip() == "") {
+                        continue;
+                    }
+                    p = Pattern.compile("\"(.+?)\"");
+                    m = p.matcher(chpTitle.ownText().strip());
+                    if (m.find()) {
+                        System.out.println( "Chp Title: " + m.group(1) );
+                    }
+                }
             }
         }
-        // for(Element e : wikiTable.select("th[id*='vol']")) {
-        //     // chapterNumbers.add(Integer.parseInt(e.ownText()));
-        //     System.out.print(e.ownText() + " ");
-        // }
         System.out.println();
     }
 
