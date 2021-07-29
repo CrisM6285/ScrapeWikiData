@@ -1,4 +1,5 @@
 package model;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -15,11 +16,13 @@ public class ScrapeWikiData {
     private Element wikiTable;
     
     private String chpSel;
-    private int chpSelOption;
-    private ArrayList<Integer> chpStarters = new ArrayList<>();
     private int totalVolumes;
     private ArrayList<Integer> volumeNumbers = new ArrayList<>();
     // private ArrayList<String> volumeTitles = new ArrayList<>();
+    private int chpSelOption;
+    private ArrayList<String> chapterTitles = new ArrayList<>();
+    private ArrayList<Integer> chapterStarters = new ArrayList<>();
+    private ArrayList<Integer> chaptersPerVolume = new ArrayList<>();
     private ArrayList<Integer> chapterNumbers = new ArrayList<>();
 
     public ScrapeWikiData(String url) {
@@ -28,7 +31,7 @@ public class ScrapeWikiData {
         setVolumeNumbers();
         setChapterSelector();
         // setVolumeTitles();
-        setChapterTitlesNums();
+        setChapterDetails();
     }
 
     public int getChpSelOption() {
@@ -105,47 +108,55 @@ public class ScrapeWikiData {
     // }
 
 
+    public ArrayList<String> getChapterTitles() {
+        return chapterTitles;
+    }
+    public ArrayList<Integer> getChapterStarters() {
+        return chapterStarters;
+    }
     public ArrayList<Integer> getChapterNumbers() {
         return chapterNumbers;
     }
-    private void setChapterTitlesNums() {
+    public ArrayList<Integer> getChapterPerVolume() {
+        return chaptersPerVolume;
+    }
+    private void setChapterDetails() {
         boolean hasLiValue = false;
         if(chpSelOption == 1) {
-            // System.out.println("1st element: " + wikiTable.select(chpSel).get(0).getElementsByAttribute("value").attr("value"));
-            // System.out.println("1st element attr: " + wikiTable.select(chpSel).get(0).attributes());
-            // System.out.println("2nd element attr: " + wikiTable.select(chpSel).get(1).attributes());
             if( wikiTable.select(chpSel).get(0).getElementsByAttribute("value").first() != null ) {
-                System.out.println( "Has 'value' key" );
                 hasLiValue = true;
+                // System.out.println( "Has 'value' key" );
             }
-            else {
-                if( !wikiTable.select(chpSel).get(0).attributes().hasKey("start") && wikiTable.select(chpSel).get(1).attributes().hasKey("start")) {
-                    wikiTable.select(chpSel).get(0).attributes().put("start", "1");
-                }
-                System.out.println( "Has 'start' keyyyyy" );
+            else if( !wikiTable.select(chpSel).get(0).attributes().hasKey("start") && wikiTable.select(chpSel).get(1).attributes().hasKey("start")) {
+                wikiTable.select(chpSel).get(0).attributes().put("start", "1");
+                // System.out.println( "Has 'start' keyyyyy" );
             }
         }
         Pattern p;
         Matcher m;
 
         if(chpSelOption == 1) {
+            int volStart = volumeNumbers.get(0);
             for(Element vol : wikiTable.select(chpSel)) {
-                String chpStart = (hasLiValue) ? vol.getElementsByAttribute("value").attr("value") : vol.attributes().get("start");
-                chpStarters.add( Integer.parseInt(chpStart) );
-                // System.out.println( "Chp Start: " + chpStart );
+                System.out.println( "Volume " + volStart );
+                int chpStart = (hasLiValue) ? Integer.parseInt( vol.getElementsByAttribute("value").attr("value") ) : Integer.parseInt( vol.attributes().get("start")) ;
+                chapterStarters.add(chpStart);
+                int numOfChps = 0;
                 for(Element chpTitle : vol.select("li")) {
-                    if(chpTitle.ownText().strip() == "") {
-                        continue;
-                    }
+                    if(chpTitle.ownText().strip() == "") continue;
                     p = Pattern.compile("\"(.+?)\"");
                     m = p.matcher(chpTitle.ownText().strip());
-                    if (m.find()) {
-                        System.out.println( "Chp Title: " + m.group(1) );
+                    if(m.find()) {
+                        System.out.println( "    " + chpStart + ": " + m.group(1) );
                     }
+                    numOfChps++;
+                    chpStart++;
                 }
+                chaptersPerVolume.add(numOfChps);
+                volStart++;
+                System.out.println();
             }
         }
-        System.out.println();
     }
 
 
