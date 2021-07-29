@@ -135,8 +135,8 @@ public class ScrapeWikiData {
         Pattern p;
         Matcher m;
 
+        int volStart = volumeNumbers.get(0);
         if(chpSelOption == 1) {
-            int volStart = volumeNumbers.get(0);
             for(Element vol : wikiTable.select(chpSel)) {
                 System.out.println( "Volume " + volStart );
                 int chpStart = (hasLiValue) ? Integer.parseInt( vol.getElementsByAttribute("value").attr("value") ) : Integer.parseInt( vol.attributes().get("start")) ;
@@ -147,6 +147,7 @@ public class ScrapeWikiData {
                     p = Pattern.compile("\"(.+?)\"");
                     m = p.matcher(chpTitle.ownText().strip());
                     if(m.find()) {
+                        chapterTitles.add(m.group(1));
                         System.out.println( "    " + chpStart + ": " + m.group(1) );
                     }
                     numOfChps++;
@@ -156,6 +157,9 @@ public class ScrapeWikiData {
                 volStart++;
                 System.out.println();
             }
+        }
+        else {
+            
         }
     }
 

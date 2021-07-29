@@ -12,8 +12,6 @@ import model.ScrapeWikiData;
 
 
 public class App {
-
-    
     public static void main(String[] args) {
 
         String link = "https://en.wikipedia.org/wiki/List_of_Attack_on_Titan_chapters";
