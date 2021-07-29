@@ -134,18 +134,18 @@ public class ScrapeWikiData {
         }
         Pattern p;
         Matcher m;
-
         int volStart = volumeNumbers.get(0);
+
         if(chpSelOption == 1) {
             for(Element vol : wikiTable.select(chpSel)) {
                 System.out.println( "Volume " + volStart );
                 int chpStart = (hasLiValue) ? Integer.parseInt( vol.getElementsByAttribute("value").attr("value") ) : Integer.parseInt( vol.attributes().get("start")) ;
                 chapterStarters.add(chpStart);
                 int numOfChps = 0;
-                for(Element chpTitle : vol.select("li")) {
-                    if(chpTitle.ownText().strip() == "") continue;
+                for(Element chpRowItem : vol.select("li")) {
+                    if(chpRowItem.ownText().strip() == "") continue;
                     p = Pattern.compile("\"(.+?)\"");
-                    m = p.matcher(chpTitle.ownText().strip());
+                    m = p.matcher(chpRowItem.ownText().strip());
                     if(m.find()) {
                         chapterTitles.add(m.group(1));
                         System.out.println( "    " + chpStart + ": " + m.group(1) );
@@ -159,11 +159,30 @@ public class ScrapeWikiData {
             }
         }
         else {
-            
+            // System.out.println( "Size: " + wikiTable.select(chpSel).select("ol").size() );
+            if(wikiTable.select(chpSel).select("ol").size() == 2) {
+                for(Element vol : wikiTable.select(chpSel).select("ol")) {
+                    System.out.println( "vol: " + vol );
+                    System.out.println();
+                }
+            }
+            else {
+                for(Element vol : wikiTable.select(chpSel)) {
+                    System.out.println( "Volume " + volStart );
+                    
+                    for( Element chpRowItem : vol.select("li") ) {
+                        if(chpRowItem.ownText().strip() == "") continue;
+                        p = Pattern.compile("(.+?)[:|\\.]\s\"(.+?)\"");
+                        m = p.matcher(chpRowItem.ownText().strip());
+                        if(m.find()) {
+                            // chapterTitles.add(m.group(2));
+                            System.out.println( "    " + m.group(1) + ": " + m.group(2) );
+                        }
+                    }
+                    volStart++;
+                    System.out.println();
+                }
+            }
         }
     }
-
-
-
-
 }
