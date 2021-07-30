@@ -120,17 +120,19 @@ public class ScrapeWikiData {
         return numOfChaptersPerVolume;
     }
     public ArrayList<String> getVolChpTitles(int vol) {
-        int firstVol = volumeNumbers.get(0);
-        int lastVol = volumeNumbers.get(totalVolumes-1);
-        if(vol < firstVol || vol > lastVol) throw new IllegalArgumentException("Volume " + vol + " is not in set of volumes.");
+        return getVolumeDetails(volChapterTitles, vol);
+    }
+    public ArrayList<String> getVolChpKs(int vol) {
+        return getVolumeDetails(volChapterKs, vol);
+    }
+    private ArrayList<String> getVolumeDetails(ArrayList<String> itemSet, int vol) {
+        if(vol < volumeNumbers.get(0) || vol > volumeNumbers.get(totalVolumes-1)) throw new IllegalArgumentException("Volume " + vol + " is not in set of volumes.");
         int indexOfVol = binarySearchIndexOfVol(vol);
-        ArrayList<String> chpTitles = new ArrayList<>();
-        
+        ArrayList<String> itemToReturn = new ArrayList<>();
         int indexChpStart = 0;
         for(int i = 0; i < indexOfVol; i++) indexChpStart += numOfChaptersPerVolume.get(i);
-        for(int i = indexChpStart; i < indexChpStart+numOfChaptersPerVolume.get(indexOfVol); i++) chpTitles.add( volChapterTitles.get(i) );
-
-        return chpTitles;
+        for(int i = indexChpStart; i < indexChpStart+numOfChaptersPerVolume.get(indexOfVol); i++) itemToReturn.add( itemSet.get(i) );
+        return itemToReturn;
     }
 
     private int binarySearchIndexOfVol(int vol) {

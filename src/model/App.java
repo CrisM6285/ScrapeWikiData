@@ -1,8 +1,8 @@
 package model;
 import java.util.Date;
 // import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+// import java.util.regex.Matcher;
+// import java.util.regex.Pattern;
 
 // import org.jsoup.Jsoup;
 // import org.jsoup.nodes.Document;
@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 
 public class App {
     public static void main(String[] args) {
-        Pattern p;
-        Matcher m;
+        // Pattern p;
+        // Matcher m;
 
         String link;
 
@@ -40,8 +40,8 @@ public class App {
         
         // ** else - else
         // link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(1%E2%80%93187)";
-        // link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(188%E2%80%93423)";
-        link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(424%E2%80%93686)";
+        link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(188%E2%80%93423)";
+        // link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(424%E2%80%93686)";
         // link = "https://en.wikipedia.org/wiki/List_of_Dragon_Ball_chapters_(series)";
         // link = "https://en.wikipedia.org/wiki/List_of_Dragon_Ball_Z_chapters";
         // link = "https://en.wikipedia.org/wiki/List_of_Hunter_%C3%97_Hunter_chapters";
@@ -73,7 +73,8 @@ public class App {
         System.out.println(" getAllNumOfChaptersPerVolume(): " + docThing.getAllNumOfChaptersPerVolume());
         System.out.println();
         System.out.println();
-        System.out.println(" getVolChpTitles(): " + docThing.getVolChpTitles(73));
+        System.out.println(" getVolChpTitles(): " + docThing.getVolChpTitles(38));
+        System.out.println("     getVolChpKs(): " + docThing.getVolChpKs(38));
         System.out.println();
 
         Date end = new Date();
