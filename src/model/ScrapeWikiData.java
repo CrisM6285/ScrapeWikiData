@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
 
 
 public class ScrapeWikiData {
@@ -21,10 +21,9 @@ public class ScrapeWikiData {
     // private ArrayList<String> volumeTitles = new ArrayList<>();
 
     private int chpSelOption;
-    private ArrayList<String> chapterNumbers = new ArrayList<>();
-    private ArrayList<String> chapterTitles = new ArrayList<>();
-    private ArrayList<Integer> chapterStarters = new ArrayList<>();
-    private ArrayList<Integer> chaptersPerVolume = new ArrayList<>();
+    private ArrayList<String> volChapterKs = new ArrayList<>();
+    private ArrayList<String> volChapterTitles = new ArrayList<>();
+    private ArrayList<Integer> numOfChaptersPerVolume = new ArrayList<>();
 
     public ScrapeWikiData(String url) {
         this.url = url;
@@ -48,7 +47,7 @@ public class ScrapeWikiData {
         for(int i = 1; i < chapterSelectors.size()+1; i++) {
             if( this.wikiTable.select(chapterSelectors.get(i-1)).size() == totalVolumes ) {
                 this.chpSel = chapterSelectors.get(i-1);
-                System.out.println("Chose option (" + (i) + "): " + chpSel);
+                // System.out.println("Chose option (" + (i) + "): " + chpSel);
                 this.chpSelOption = i;
                 return;
             }
@@ -65,7 +64,7 @@ public class ScrapeWikiData {
     public Element getWikiTable() {
         return wikiTable;
     }
-    public void setWikiTable() {
+    private void setWikiTable() {
         Document doc = null;
         try {
             doc = Jsoup.connect(url).get();
@@ -111,17 +110,14 @@ public class ScrapeWikiData {
     // }
 
 
-    public ArrayList<String> getChapterTitles() {
-        return chapterTitles;
+    public ArrayList<String> getAllVolChapterTitles() {
+        return volChapterTitles;
     }
-    public ArrayList<Integer> getChapterStarters() {
-        return chapterStarters;
+    public ArrayList<String> getAllVolChapterKs() {
+        return volChapterKs;
     }
-    public ArrayList<String> getChapterNumbers() {
-        return chapterNumbers;
-    }
-    public ArrayList<Integer> getChapterPerVolume() {
-        return chaptersPerVolume;
+    public ArrayList<Integer> getAllNumOfChaptersPerVolume() {
+        return numOfChaptersPerVolume;
     }
     private void setChapterDetails() {
         boolean hasLiValue = false;
@@ -138,73 +134,107 @@ public class ScrapeWikiData {
         Pattern p;
         Matcher m;
         int volStart = volumeNumbers.get(0);
+        String chpRow;
+        String chpK;
+        String chpTitle;
 
         if(chpSelOption == 1) {
-            System.out.println("\n**if\n\n");
+            System.out.println("\n** if\n\n");
+
             for(Element vol : wikiTable.select(chpSel)) {
                 System.out.println( "Volume " + volStart );
-                int chpStart = (hasLiValue) ? Integer.parseInt( vol.getElementsByAttribute("value").attr("value") ) : Integer.parseInt( vol.attributes().get("start")) ;
-                chapterStarters.add(chpStart);
+                int chpStart = (hasLiValue) ? Integer.parseInt( vol.getElementsByAttribute("value").attr("value") ) : Integer.parseInt( vol.attributes().get("start") );
                 int numOfChps = 0;
+
                 for(Element chpRowItem : vol.select("li")) {
-                    if(chpRowItem.ownText().strip() == "") continue;
-                    p = Pattern.compile("\"(.+?)\"");
-                    m = p.matcher(chpRowItem.ownText().strip());
+                    chpRow = chpRowItem.text().strip();
+
+                    if(chpRow.isEmpty()) continue;
+                    // System.out.println("Test: " + chpRow);
+                    p = Pattern.compile("^\"(.+?)[\"|(]");
+                    m = p.matcher(chpRow);
                     if(m.find()) {
-                        chapterTitles.add(m.group(1));
-                        System.out.println( "    " + String.format("%1$3s", chpStart) + ": " + m.group(1) );
+                        chpK = String.format("%1$3s", chpStart);
+                        chpTitle = m.group(1).strip();
+
+                        volChapterKs.add(chpK);
+                        volChapterTitles.add(chpTitle);
+                        // System.out.println( "    " + chpK + ": " + chpTitle );
                     }
                     else {
-                        System.out.println("******* " + String.format("%1$3s", chpStart) + " was skipped");
-                        chpStart++;
+                        System.out.println("******* " + String.format("%1$3s", chpStart) + " was skipped *******");
                     }
+                    chpStart++;
                     numOfChps++;
                 }
-                chaptersPerVolume.add(numOfChps);
+                numOfChaptersPerVolume.add(numOfChps);
                 volStart++;
-                System.out.println();
+                // System.out.println();
             }
         }
         else {
-            // System.out.println( "Size: " + wikiTable.select(chpSel).select("ol").size() );
             if(wikiTable.select(chpSel).get(0).select("ol").size() == 2) {
-                System.out.println("\n**else - 1st if\n\n");
+                System.out.println("\n **else - if\n\n");
+
                 for(Element vol : wikiTable.select(chpSel)) {
                     System.out.println( "Volume " + volStart );
                     int chpStart = Integer.parseInt( vol.select("ol").first().attr("start") );
+                    int numOfChps = 0;
 
                     for( Element chpRowItem : vol.select("li") ) {
-                        if(chpRowItem.ownText().strip() == "") continue;
-                        p = Pattern.compile("\"(.+?)\"");
-                        m = p.matcher(chpRowItem.ownText().strip());
+                        chpRow = chpRowItem.text().strip();
+                        if(chpRow.isEmpty()) continue;
+                        p = Pattern.compile("\"(.+?)[\"|(]");
+                        m = p.matcher(chpRow);
                         if(m.find()) {
-                            chapterTitles.add(m.group(1));
-                            System.out.println( "    " + String.format("%1$3s", chpStart) + ": " + m.group(1));
+                            chpK = String.format("%1$3s", chpStart);
+                            chpTitle = m.group(1).strip();
+
+                            volChapterKs.add(chpK);
+                            volChapterTitles.add(chpTitle);
+                            // System.out.println( "    " + chpK + ": " + chpTitle);
                         }
                         else {
-                            System.out.println("******* " + chpStart + " was skipped");
+                            System.out.println("******* " + chpStart + " was skipped *******");
                         }
                         chpStart++;
+                        numOfChps++;
                     }
+                    numOfChaptersPerVolume.add(numOfChps);
                     volStart++;
+                    // System.out.println();
                 }
             }
             else {
-                System.out.println("\n**else - else\n\n");
+                System.out.println("\n** else - else\n\n");
+
                 for(Element vol : wikiTable.select(chpSel)) {
                     System.out.println( "Volume " + volStart );
+                    int numOfChps = 0;
 
                     for( Element chpRowItem : vol.select("li") ) {
-                        if(chpRowItem.ownText().strip() == "") continue;
-                        p = Pattern.compile("(.+?)[:|\\.]\s\"(.+?)\"");
-                        m = p.matcher(chpRowItem.ownText().strip());
+                        chpRow = chpRowItem.text().strip();
+                        if(chpRow.isEmpty()) continue;
+                        p = Pattern.compile("^(.{1,5}?)[:|\\.] \"(.+?)[\"|(]");
+                        m = p.matcher(chpRow);
                         if(m.find()) {
-                            // chapterTitles.add(m.group(2));
-                            System.out.println( "    " + m.group(1) + ": " + m.group(2) );
+                            chpK = String.format("%1$3s", m.group(1));
+                            chpTitle = m.group(2).strip();
+
+                            volChapterKs.add(chpK);
+                            volChapterTitles.add(chpTitle);
+                            // System.out.println( "    " + chpK + ": " + chpTitle );
                         }
+                        else {
+                            System.out.println("******* skipped *******");
+                            System.out.println(chpRow);
+                            System.out.println("******* skipped *******");
+                        }
+                        numOfChps++;
                     }
+                    numOfChaptersPerVolume.add(numOfChps);
                     volStart++;
-                    System.out.println();
+                    // System.out.println();
                 }
             }
         }
