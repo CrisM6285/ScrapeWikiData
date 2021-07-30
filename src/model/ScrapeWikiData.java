@@ -119,6 +119,38 @@ public class ScrapeWikiData {
     public ArrayList<Integer> getAllNumOfChaptersPerVolume() {
         return numOfChaptersPerVolume;
     }
+    public ArrayList<String> getVolChpTitles(int vol) {
+        int firstVol = volumeNumbers.get(0);
+        int lastVol = volumeNumbers.get(totalVolumes-1);
+        if(vol < firstVol || vol > lastVol) throw new IllegalArgumentException("Volume " + vol + " is not in set of volumes.");
+        int indexOfVol = binarySearchIndexOfVol(vol);
+        ArrayList<String> chpTitles = new ArrayList<>();
+        
+        int indexChpStart = 0;
+        for(int i = 0; i < indexOfVol; i++) indexChpStart += numOfChaptersPerVolume.get(i);
+        for(int i = indexChpStart; i < indexChpStart+numOfChaptersPerVolume.get(indexOfVol); i++) chpTitles.add( volChapterTitles.get(i) );
+
+        return chpTitles;
+    }
+
+    private int binarySearchIndexOfVol(int vol) {
+        int low = 0;
+        int high = totalVolumes-1;
+        int mid;
+        while(low <= high) {
+            mid = (low + high) / 2;
+            if(volumeNumbers.get(mid) == vol) {
+                return mid;
+            } else if(volumeNumbers.get(mid) > vol) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return -1;
+    }
+
+
     private void setChapterDetails() {
         boolean hasLiValue = false;
         if(chpSelOption == 1) {
@@ -133,16 +165,16 @@ public class ScrapeWikiData {
         }
         Pattern p;
         Matcher m;
-        int volStart = volumeNumbers.get(0);
+        // int volStart = volumeNumbers.get(0);
         String chpRow;
         String chpK;
         String chpTitle;
 
         if(chpSelOption == 1) {
-            System.out.println("\n** if\n\n");
+            // System.out.println("\n** if\n\n");
 
             for(Element vol : wikiTable.select(chpSel)) {
-                System.out.println( "Volume " + volStart );
+                // System.out.println( "Volume " + volStart );
                 int chpStart = (hasLiValue) ? Integer.parseInt( vol.getElementsByAttribute("value").attr("value") ) : Integer.parseInt( vol.attributes().get("start") );
                 int numOfChps = 0;
 
@@ -168,16 +200,16 @@ public class ScrapeWikiData {
                     numOfChps++;
                 }
                 numOfChaptersPerVolume.add(numOfChps);
-                volStart++;
+                // volStart++;
                 // System.out.println();
             }
         }
         else {
             if(wikiTable.select(chpSel).get(0).select("ol").size() == 2) {
-                System.out.println("\n **else - if\n\n");
+                // System.out.println("\n** else - if\n\n");
 
                 for(Element vol : wikiTable.select(chpSel)) {
-                    System.out.println( "Volume " + volStart );
+                    // System.out.println( "Volume " + volStart );
                     int chpStart = Integer.parseInt( vol.select("ol").first().attr("start") );
                     int numOfChps = 0;
 
@@ -201,21 +233,21 @@ public class ScrapeWikiData {
                         numOfChps++;
                     }
                     numOfChaptersPerVolume.add(numOfChps);
-                    volStart++;
+                    // volStart++;
                     // System.out.println();
                 }
             }
             else {
-                System.out.println("\n** else - else\n\n");
+                // System.out.println("\n** else - else\n\n");
 
                 for(Element vol : wikiTable.select(chpSel)) {
-                    System.out.println( "Volume " + volStart );
+                    // System.out.println( "Volume " + volStart );
                     int numOfChps = 0;
 
                     for( Element chpRowItem : vol.select("li") ) {
                         chpRow = chpRowItem.text().strip();
                         if(chpRow.isEmpty()) continue;
-                        p = Pattern.compile("^(.{1,5}?)[:|\\.] \"(.+?)[\"|(]");
+                        p = Pattern.compile("^(.+?)[:|\\.] \"(.+?)[\"|(]");
                         m = p.matcher(chpRow);
                         if(m.find()) {
                             chpK = String.format("%1$3s", m.group(1));
@@ -233,7 +265,7 @@ public class ScrapeWikiData {
                         numOfChps++;
                     }
                     numOfChaptersPerVolume.add(numOfChps);
-                    volStart++;
+                    // volStart++;
                     // System.out.println();
                 }
             }
