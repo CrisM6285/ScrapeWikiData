@@ -6,7 +6,7 @@ public class Main {
         String link;
 
         // ** if
-        // link = "https://en.wikipedia.org/wiki/List_of_Attack_on_Titan_chapters";
+        link = "https://en.wikipedia.org/wiki/List_of_Attack_on_Titan_chapters";
         // link = "https://en.wikipedia.org/wiki/List_of_Boruto:_Naruto_Next_Generations_chapters";
         // link = "https://en.wikipedia.org/wiki/List_of_Dragon_Ball_Super_chapters";
         // link = "https://en.wikipedia.org/wiki/List_of_My_Hero_Academia_chapters";
@@ -26,7 +26,7 @@ public class Main {
         
         // ** else - else
         // link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(1%E2%80%93187)";
-        link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(188%E2%80%93423)";
+        // link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(188%E2%80%93423)";
         // link = "https://en.wikipedia.org/wiki/List_of_Bleach_chapters_(424%E2%80%93686)";
         // link = "https://en.wikipedia.org/wiki/List_of_Dragon_Ball_chapters_(series)";
         // link = "https://en.wikipedia.org/wiki/List_of_Dragon_Ball_Z_chapters";

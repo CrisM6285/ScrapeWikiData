@@ -33,10 +33,6 @@ public class ScrapeWikiData {
     }
 
 
-
-    public int getChpSelOption() {
-        return chpSelOption;
-    }
     private void setChapterSelector() {
         ArrayList<String> chapterSelectors = new ArrayList<>();
         chapterSelectors.add("td ol");
@@ -59,29 +55,13 @@ public class ScrapeWikiData {
     }
 
 
-    public Element getWikiTable() {
-        return wikiTable;
-    }
-    private void setWikiTable() {
-        Document doc = null;
-        try {
-            doc = Jsoup.connect(url).get();
-        } catch(IOException e) {
-            e.printStackTrace();
-            System.out.println("Could not connect to url: " + url);
-            return;
-        }
-        this.wikiTable = doc.selectFirst(".wikitable");
-    }
-
-
     public int getTotalVolumes() {
         return totalVolumes;
     }
     private void setTotalVolumes() {
         this.totalVolumes = volumeNumbers.size();
     }
-
+    
 
     public ArrayList<Integer> getVolumeNumbers() {
         return volumeNumbers;
@@ -96,7 +76,7 @@ public class ScrapeWikiData {
         setTotalVolumes();
     }
 
-
+    
     public ArrayList<String> getAllVolChapterTitles() {
         return volChapterTitles;
     }
@@ -112,6 +92,21 @@ public class ScrapeWikiData {
     public ArrayList<String> getVolChpKs(int vol) {
         return getVolumeDetails(volChapterKs, vol);
     }
+
+
+    private void setWikiTable() {
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(url).get();
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.out.println("Could not connect to url: " + url);
+            return;
+        }
+        this.wikiTable = doc.selectFirst(".wikitable");
+    }
+
+
     private ArrayList<String> getVolumeDetails(ArrayList<String> itemSet, int vol) {
         if(vol < volumeNumbers.get(0) || vol > volumeNumbers.get(totalVolumes-1)) throw new IllegalArgumentException("Volume " + vol + " is not in set of volumes.");
         int indexOfVol = binarySearchIndexOfVol(vol);
