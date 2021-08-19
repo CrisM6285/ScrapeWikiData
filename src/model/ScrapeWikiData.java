@@ -18,7 +18,6 @@ public class ScrapeWikiData {
     private String chpSel;
     private int totalVolumes;
     private ArrayList<Integer> volumeNumbers = new ArrayList<>();
-    // private ArrayList<String> volumeTitles = new ArrayList<>();
 
     private int chpSelOption;
     private ArrayList<String> volChapterKs = new ArrayList<>();
@@ -30,7 +29,6 @@ public class ScrapeWikiData {
         setWikiTable();
         setVolumeNumbers();
         setChapterSelector();
-        // setVolumeTitles();
         setChapterDetails();
     }
 
@@ -97,17 +95,6 @@ public class ScrapeWikiData {
         }
         setTotalVolumes();
     }
-
-    // public ArrayList<String> getVolumeTitles() {
-    //     return volumeTitles;
-    // }
-    // private void setVolumeTitles() {
-    //     Elements volumElements = wikiTable.select("td[style='text-align: left;']");
-
-    //     for(Element e : volumElements) {
-    //         System.out.println(e.ownText());
-    //     }
-    // }
 
 
     public ArrayList<String> getAllVolChapterTitles() {

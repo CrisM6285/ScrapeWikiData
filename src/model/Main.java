@@ -12,7 +12,7 @@ import java.util.Date;
 // import model.ScrapeWikiData;
 
 
-public class App {
+public class Main {
     public static void main(String[] args) {
         // Pattern p;
         // Matcher m;
