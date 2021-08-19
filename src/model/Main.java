@@ -1,22 +1,8 @@
 package model;
 import java.util.Date;
-// import java.io.IOException;
-// import java.util.regex.Matcher;
-// import java.util.regex.Pattern;
-
-// import org.jsoup.Jsoup;
-// import org.jsoup.nodes.Document;
-// import org.jsoup.nodes.Element;
-// import org.jsoup.select.Elements;
-
-// import model.ScrapeWikiData;
-
 
 public class Main {
     public static void main(String[] args) {
-        // Pattern p;
-        // Matcher m;
-
         String link;
 
         // ** if
@@ -52,16 +38,6 @@ public class Main {
         
         System.out.println("\n\nLink: " + link + "\n");
         ScrapeWikiData docThing = new ScrapeWikiData(link);
-        
-
-        // p = Pattern.compile("^\"(.+?)[\"|(]");
-        // m = p.matcher("\"To You, 2,000 Years from Now (二千年後の君へ, Ni Sen Nen Go no Kimi e)");
-        // if(m.find()) {
-        //     System.out.println("group(1): " + m.group(1));
-        //     System.out.println("length: " + m.group(1).length());
-        //     System.out.println("group(1): " + m.group(1).strip());
-        //     System.out.println("length: " + m.group(1).strip().length());
-        // }
 
         // System.out.println("                       getURL(): " + docThing.getURL());
         System.out.println("             getVolumeNumbers(): " + docThing.getVolumeNumbers());
